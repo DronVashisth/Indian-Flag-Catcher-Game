@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch the Flag - Republic Day Edition</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #74ebd5, #acb6e5);
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #333;
+    }
+    #gameArea {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      border: 3px solid #000;
+      border-radius: 10px;
+      background: #f5f5f5;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
+    }
+    .player {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      background: #000; /* Black circle */
+      border-radius: 50%;
+    }
+    .flag {
+      position: absolute;
+      width: 40px;
+      height: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+    .flag .saffron {
+      background: #FF9933; /* Saffron */
+      height: 10px;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+    .flag .white {
+      background: #fff; /* White */
+      height: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .flag .white .circle {
+      width: 6px;
+      height: 6px;
+      background: #000088; /* Navy blue for Ashoka Chakra */
+      border-radius: 50%;
+    }
+    .flag .green {
+      background: #138808; /* Green */
+      height: 10px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
+    #score {
+      font-size: 1.2rem;
+      color: #000;
+      margin-top: 10px;
+      background: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>Catch the Flag - Republic Day Edition</h1>
+  <div id="gameArea">
+    <div id="player" class="player"></div>
+    <div id="flag" class="flag" style="top: 100px; left: 100px;">
+      <div class="saffron"></div>
+      <div class="white">
+        <div class="circle"></div>
+      </div>
+      <div class="green"></div>
+    </div>
+  </div>
+  <div id="score">Score: 0</div>
+
+  <script>
+    const player = document.getElementById('player');
+    const flag = document.getElementById('flag');
+    const scoreDisplay = document.getElementById('score');
+    const gameArea = document.getElementById('gameArea');
+
+    let playerPos = { top: 0, left: 0 };
+    let score = 0;
+
+    // Move player with arrow keys
+    document.addEventListener('keydown', (e) => {
+      const step = 10;
+      if (e.key === 'ArrowUp' && playerPos.top > 0) playerPos.top -= step;
+      if (e.key === 'ArrowDown' && playerPos.top < 380) playerPos.top += step;
+      if (e.key === 'ArrowLeft' && playerPos.left > 0) playerPos.left -= step;
+      if (e.key === 'ArrowRight' && playerPos.left < 380) playerPos.left += step;
+
+      player.style.top = playerPos.top + 'px';
+      player.style.left = playerPos.left + 'px';
+
+      checkCollision();
+    });
+
+    // Check if player "catches" the flag
+    function checkCollision() {
+      const playerRect = player.getBoundingClientRect();
+      const flagRect = flag.getBoundingClientRect();
+
+      if (
+        playerRect.left < flagRect.right &&
+        playerRect.right > flagRect.left &&
+        playerRect.top < flagRect.bottom &&
+        playerRect.bottom > flagRect.top
+      ) {
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+        repositionFlag();
+      }
+    }
+
+    // Reposition the flag to a random location
+    function repositionFlag() {
+      const x = Math.floor(Math.random() * 360);
+      const y = Math.floor(Math.random() * 360);
+      flag.style.top = y + 'px';
+      flag.style.left = x + 'px';
+    }
+  </script>
+</body>
+</html>
